@@ -198,12 +198,7 @@ export const loginUser = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error("Login error:", err);
-    return sendResponse(
-      res,
-      500,
-      false,
-      err || "Internal server error"
-    );
+    return sendResponse(res, 500, false, "Internal server error", err);
   }
 };
 
