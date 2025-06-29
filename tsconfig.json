@@ -4,9 +4,8 @@
     "module": "CommonJS",
     "outDir": "./dist",
     "strict": true,
-    "esModuleInterop": true,
-    "types": ["node"]
+    "esModuleInterop": true
   },
-   "include": ["src"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
