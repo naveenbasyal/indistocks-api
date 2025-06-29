@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Razorpay Test Checkout</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  <body>
+    <button id="rzp-button">Pay ₹299</button>
+    <script>
+      const options = {
+        key: "rzp_test_yQG26LZF4tUxWj", // your test key
+        amount: 29900, // in paise
+        currency: "INR",
+        name: "Stock Data API",
+        description: "Subscription Upgrade",
+        order_id: "order_Qlm6PtRNv5jHKk", // your original order
+        prefill: {
+          name: "Test User",
+          email: "test@example.com",
+          contact: "9999999999",
+        },
+        theme: { color: "#528FF0" },
+        handler: function (response) {
+          console.log("✔️  Payment completed:", response);
+          alert("Payment ID: " + response.razorpay_payment_id);
+        },
+      };
+      const rzp = new Razorpay(options);
+      document.getElementById("rzp-button").onclick = () => rzp.open();
+    </script>
+  </body>
+</html>
