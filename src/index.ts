@@ -14,6 +14,11 @@ const PORT = process.env.PORT || 8001;
 app.use(cors());
 
 app.use(express.json());
+app.use("/", (_, res) => {
+  res.status(200).json({
+    message: "Server Running",
+  });
+});
 
 app.use("/api/stocks", authMiddleware, validateApiKeyRedis, stocksRoutes);
 app.use("/api/users", userRoutes);
