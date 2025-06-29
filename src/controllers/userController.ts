@@ -202,7 +202,7 @@ export const loginUser = async (req: Request, res: Response) => {
       res,
       500,
       false,
-      err.message || "Internal server error"
+      err || "Internal server error"
     );
   }
 };
