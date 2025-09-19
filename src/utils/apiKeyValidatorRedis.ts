@@ -3,7 +3,7 @@ import { users } from "../db/schema/users";
 import { subscriptions } from "../db/schema/subscriptions";
 import { plans } from "../db/schema/plans";
 
-import { eq, and, gte } from "drizzle-orm";
+import { eq, and, gte, lte } from "drizzle-orm";
 import redis from "./redisClient";
 
 export const validateApiKeyRedis = async (req: any, res: any, next: any) => {
@@ -24,6 +24,8 @@ export const validateApiKeyRedis = async (req: any, res: any, next: any) => {
         .status(401)
         .json({ success: false, message: "Invalid API key" });
     }
+
+    await refreshUserSubscriptions(user.id);
 
     const now = new Date();
     const [subscription] = await db
@@ -94,3 +96,36 @@ export const validateApiKeyRedis = async (req: any, res: any, next: any) => {
       .json({ success: false, message: "Internal server error" });
   }
 };
+
+async function refreshUserSubscriptions(userId: string) {
+  const now = new Date().toISOString();
+
+  // Expire old subscriptions
+  await db
+    .update(subscriptions)
+    .set({ isActive: false })
+    .where(
+      and(
+        eq(subscriptions.userId, userId),
+        lte(subscriptions.endDate, now),
+        eq(subscriptions.isActive, true)
+      )
+    );
+
+  // Check if user has another valid plan
+  const [latestSub] = await db
+    .select()
+    .from(subscriptions)
+    .where(
+      and(eq(subscriptions.userId, userId), gte(subscriptions.endDate, now))
+    )
+    .orderBy(subscriptions.endDate)
+    .limit(1);
+
+  if (latestSub) {
+    await db
+      .update(subscriptions)
+      .set({ isActive: true })
+      .where(eq(subscriptions.id, latestSub.id));
+  }
+}

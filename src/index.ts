@@ -3,7 +3,6 @@ import stocksRoutes from "./routes/stockRoutes";
 import userRoutes from "./routes/userRoutes";
 import plansRoutes from "./routes/plansRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
-import { validateApiKey } from "./utils/apiKeyValidator";
 import { authMiddleware } from "./middlewares/authMiddleware";
 import cors from "cors";
 import "dotenv/config";
